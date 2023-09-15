@@ -6,7 +6,8 @@ const connectToDatabase = async () => {
     //   "mongodb+srv://omkhetwal:qfxoQkUzbzQWaoMo@youtube.lothdki.mongodb.net/blossom-app?retryWrites=true&w=majority"
     // )
   const connection = await mongoose.connect(
-      "mongodb://127.0.0.1:27017/blossom-app?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
+    "mongodb://admin:password@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
+    //  "mongodb://127.0.0.1:27017/blossom-app?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
   )
 
     if (connection) {

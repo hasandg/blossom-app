@@ -4,9 +4,10 @@ const connectToDatabase = async () => {
     try {
         console.log("tring to connect")
         const connection = await mongoose.connect(
-          //  "mongodb://127.0.0.1:27017/blossom-app?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
+            "mongodb://admin:password@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
           //"mongodb://127.0.0.1:27017/blossom-app?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
-          "mongodb://root:example@localhost:27017/"
+          //"mongodb://root:example@localhost:27017/"
+          //"mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb"
         )
         if(connection){
             console.log("Connection established")
