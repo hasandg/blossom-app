@@ -10,7 +10,7 @@ const application = express()
 application.use(express.json())
 application.use(cors())
 
-const PORT = 1337
+const PORT = 1338
 
 connectToDatabase()
 

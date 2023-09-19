@@ -2,22 +2,22 @@ import mongoose from "mongoose"
 
 const connectToDatabase = async () => {
     try {
-        console.log("tring to connect")
-        const connection = await mongoose.connect(
-            "mongodb://admin:password@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
-          //"mongodb://127.0.0.1:27017/blossom-app?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
-          //"mongodb://root:example@localhost:27017/"
-          //"mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb"
-        )
-        if(connection){
-            console.log("Connection established")
-        }else{
-            console.log("not connected!!!!")
-        }
+      // const connection = await mongoose.connect(
+      //   "mongodb+srv://omkhetwal:qfxoQkUzbzQWaoMo@youtube.lothdki.mongodb.net/blossom-app?retryWrites=true&w=majority"
+      // )
+    const connection = await mongoose.connect(
+      "mongodb://admin:password@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
+      //  "mongodb://127.0.0.1:27017/blossom-app?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
+    )
+  
+      if (connection) {
+        console.log("Connection established")
+      }
     } catch (error) {
-        console.log('eroor in connectToDatabase', error)
-        throw error
+      console.log("error in connectToDatabase", error)
+      throw error
     }
-}
-
-export default connectToDatabase
+  }
+  
+  export default connectToDatabase
+  

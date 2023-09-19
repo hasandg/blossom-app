@@ -1,9 +1,11 @@
 import express, { Request, Response } from "express"
 import connectToDatabase from "./db"
-import userRoutes from "./routes/user.route"
+import userRoutes from "./routes/user.routes"
+import categoryRoutes from "./routes/category.routes"
 const application = express()
 
 application.use(express.json())
+
 
 
 const PORT=1337
@@ -15,7 +17,7 @@ application.get("/ping", (request: Request, response: Response) =>{
 })
 
 application.use("/users", userRoutes)
-
+application.use("/categories", categoryRoutes)
 
 
 application.listen(PORT,() => {
