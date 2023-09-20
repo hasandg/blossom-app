@@ -2,7 +2,10 @@ import {Request,Response} from "express"
 import jwt from "jsonwebtoken"
 import User from "../models/user-model"
 
-export const authenticationMiddleware = async (request: Request, response: Response) {
+interface CustomRequest extends Request {
+    user: string
+}
+export const authenticationMiddleware = async (request: CustomRequest, response: Response) => {
     try {
         const {authorization} = request.headers
         if(!authorization){
@@ -19,6 +22,6 @@ export const authenticationMiddleware = async (request: Request, response: Respo
 
      
     } catch (error) {
-        
+        console.log("error in authenticationMiddleware")
     }
 }

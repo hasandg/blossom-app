@@ -2,11 +2,9 @@ import mongoose from "mongoose"
 
 const connectToDatabase = async () => {
     try {
-      // const connection = await mongoose.connect(
-      //   "mongodb+srv://omkhetwal:qfxoQkUzbzQWaoMo@youtube.lothdki.mongodb.net/blossom-app?retryWrites=true&w=majority"
-      // )
     const connection = await mongoose.connect(
-      "mongodb://admin:password@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
+        "mongodb+srv://omkhetwal:qfxoQkUzbzQWaoMo@youtube.lothdki.mongodb.net/blossom-app?retryWrites=true&w=majority"
+      //"mongodb://admin:password@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
       //  "mongodb://127.0.0.1:27017/blossom-app?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
     )
   
