@@ -1,5 +1,5 @@
 import express from 'express'
-import { createCategory, deleteCategory, getAllCategories, updateCategory } from '../controllers/category.controller'
+import { createCategory, deleteCategory, getAllCategories } from '../controllers/category.controller'
 import { authenticationMiddleware } from '../middleware'
 
 
@@ -9,7 +9,6 @@ categoryRoutes.use(authenticationMiddleware)
 
 categoryRoutes.route("/").get(getAllCategories)
 categoryRoutes.route("/create").post(createCategory)
-categoryRoutes.route("/:id").delete(deleteCategory)
-categoryRoutes.route("/").put(updateCategory)
+categoryRoutes.route("/category/:id").delete(deleteCategory)
 
 export default categoryRoutes

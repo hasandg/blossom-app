@@ -30,36 +30,3 @@ export const createCategory = async (request: AuthRequest, response: Response) =
         throw error
     }
 }
-
-export const deleteCategory = async (
-    request: AuthRequest,
-    response: Response
-) => {
-    try {
-        const { id } = request.params
-        Category.deleteMany({ _id: id })
-        return response.send({ message: "Category deleted!" })
-    } catch (error) {
-        console.log("error in deleteCategory", error)
-        response.send({ error: "Something went wrong" })
-        throw error
-    }
-}
-
-export const updateCategory = async (request: AuthRequest, response: Response) => {
-    try {
-        const { _id, name, isEditable, color, icon }: ICategory = request.body
-        const category = await Category.updateOne({
-            _id,
-        },
-            {
-                $set: { name, isEditable, color, icon },
-            }
-        )
-        return response.send({message: "Category updated successfully"})
-    } catch (error) {
-        console.log("error in updateCategory", error)
-        response.send({ error: "Error in updating the category" })
-        throw error
-    }
-}

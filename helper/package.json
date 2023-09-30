@@ -1,5 +1,5 @@
 {
-  "name": "my_blossom-application-front-end",
+  "name": "my_blossom-application-helper",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,11 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "@shopify/restyle": "^2.4.2",
     "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.8.1",
-    "mongoose": "^7.4.4"
+    "mongoose": "^7.4.4",
+    "react-native-svg": "^13.14.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
