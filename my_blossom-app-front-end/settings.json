@@ -1,0 +1,8 @@
+{
+    "newFile.defaultBaseFileName": "newFile",
+    "newFile.relativeTo": "file", // "root" or "project"
+    "newFile.defaultFileExtension": ".ts",
+    "newFile.rootDirectory": "~",
+    "newFile.showPathRelativeTo": "root", // "project" or "none"
+    "newFile.expandBraces": false // setting to true will allow for creating multiple files such as `new-folder/{file1,file2}.js`
+  }

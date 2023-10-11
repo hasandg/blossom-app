@@ -11,12 +11,14 @@ export type RootBottomTabParamList = {
   HomeStack: NavigatorScreenParams<HomeStackParamList>;
   Today: undefined;
   Completed: undefined;
-  Categories: undefined;
+  CategoriesStack: undefined;
 };
 
 export type HomeStackParamList = {
     Home: undefined 
-    EditTask: undefined
+    EditTask: {
+        task: ITask
+      }
 }
 
 export type CategoriesStackParamList = {
@@ -51,3 +53,5 @@ RouteName extends keyof AuthStackParamList
 NativeStackNavigationProp<AuthStackParamList, RouteName>,
 NativeStackNavigationProp<AppStackParamList, "Root">
 >
+export type CategoriesNavigationType =
+  NativeStackNavigationProp<CategoriesStackParamList>

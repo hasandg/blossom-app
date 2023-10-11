@@ -11,12 +11,12 @@ const getUserToken = (_id: string | Types.ObjectId) => {
 }
 
 export const createUser = async (request: Request, response: Response) => {
-    //console.dir(request.body)
+    console.dir(request.body)
     try {
         const { name, email, password } = request.body
         const existingUser = await User.findOne({ email })
         //console.dir(existingUser)
-        if (existingUser) {
+        if (existingUser) {            
             return response.status(409).send("user already exist")
         }
 
@@ -38,7 +38,7 @@ export const createUser = async (request: Request, response: Response) => {
 export const loginUser = async (request: Request, response: Response) => {
     try {
         const { email, password }: IUser = request.body
-        const existingUser = (await User.findOne({ email })).$clone()
+        const existingUser = await User.findOne({ email })
         if (!existingUser) {
             return response.status(409).send({ message: "User doesn't exist!" })
         }
