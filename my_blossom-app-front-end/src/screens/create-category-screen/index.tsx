@@ -43,7 +43,7 @@ const updateCategoryRequest = async (
       ...arg,
     })
   } catch (error) {
-    console.log("error in createCategoryRequest", error)
+    console.log("error in updateCategoryRequest", error)
     throw error
   }
 }
@@ -184,7 +184,7 @@ const CreateCategoryScreen = () => {
             }}
             value={newCategory.name}
             maxLength={36}
-            placeholder="Create new list"
+            placeholder="Category name"
             placeholderTextColor={theme.colors.gray5}
             onChangeText={(text) => {
               setNewCategory((prev) => {

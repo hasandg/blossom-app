@@ -1,152 +1,155 @@
-import { Request, Response } from "express";
-import Task from "../models/task-modal";
-import { ITask } from "../types";
-import { AuthRequest } from "../middleware";
+import { Request, Response } from "express"
+import { AuthRequest } from "../middleware"
+import Task from "../models/task-model"
+import { ITask } from "../types"
 
 export const getAllTasks = async (request: AuthRequest, response: Response) => {
   try {
-    const { userId } = request.body;
-
+    const userId = request.user
     const tasks = await Task.find({
       user: userId,
-    });
-    return response.send(tasks);
+    })
+    response.send(tasks)
   } catch (error) {
-    console.log("error in getAllTasks", error);
-    response.send({ error: "Something went wrong" });
-    throw error;
+    console.log("error in getAllTasks", error)
+    response.send({ error: "Error while fetching tasks" })
+    throw error
   }
-};
+}
 
-export const getAllTasksByCategoryId = async (
+export const getAllTasksByCategory = async (
   request: AuthRequest,
   response: Response
 ) => {
   try {
-    const userId = request.user;
-    const { categoryId } = request.body;
-
+    const userId = request.user
+    const { id } = request.params
     const tasks = await Task.find({
       user: userId,
-      category: categoryId,
-    });
-    return response.send(tasks);
+      categoryId: id,
+    })
+    response.send(tasks)
   } catch (error) {
-    console.log("error in getAllTasksByCategoryId", error);
-    response.send({ error: "Something went wrong" });
-    throw error;
+    console.log("error in getAllTasksByCategory", error)
+    response.send({ error: "Error while fetching tasks" })
+    throw error
   }
-};
+}
 
 export const getAllCompletedTasks = async (
   request: AuthRequest,
   response: Response
 ) => {
   try {
-    const userId = request.user;
-
+    const userId = request.user
     const tasks = await Task.find({
       user: userId,
       isCompleted: true,
-    });
-    return response.send(tasks);
+    })
+    response.send(tasks)
   } catch (error) {
-    console.log("error in getAllCompletedTasks", error);
-    response.send({ error: "Something went wrong" });
-    throw error;
+    console.log("error in getAllCompletedTasks", error)
+    response.send({ error: "Error while fetching tasks" })
+    throw error
   }
-};
+}
 
 export const getTasksForToday = async (
   request: AuthRequest,
   response: Response
 ) => {
   try {
-    const userId = request.user;
-    const todayISODate = new Date()
-    todayISODate.setHours(0, 0, 0, 0);
+    const userId = request.user
+    const todaysISODate = new Date()
+    todaysISODate.setHours(0, 0, 0, 0)
     const tasks = await Task.find({
       user: userId,
-      date: todayISODate.toISOString(),
-    });
-    return response.send(tasks);
+      date: todaysISODate.toISOString(),
+    })
+    response.send(tasks)
   } catch (error) {
-    console.log("error in getTasksForToday", error);
-    response.send({ error: "Something went wrong" });
-    throw error;
+    console.log("error in getTasksForToday", error)
+    response.send({ error: "Error while fetching tasks" })
+    throw error
   }
-};
+}
 
 export const createTask = async (request: AuthRequest, response: Response) => {
   try {
-    const { name, isCompleted, categoryId, date, isEditable }: ITask =
-      request.body;
+    const userId = request.user
+    const { name, date, categoryId }: ITask = request.body
+
     const task = await Task.create({
       name,
-      isCompleted,
-      categoryId,
       date,
-      isEditable,
-    });
-    return response.send(task);
+      categoryId,
+      user: userId,
+    })
+    response.send(task)
   } catch (error) {
-    console.log("error in createTask", error);
-    response.send({ error: "Something went wrong" });
-    throw error;
+    console.log("error in createTask", error)
+    response.send({ error: "Error while creating task" })
+    throw error
   }
-};
+}
 
-export const toogleTaskStatus = async (
+export const toggleTaskStatus = async (
   request: AuthRequest,
   response: Response
 ) => {
   try {
-    const { isCompleted }: ITask = request.body;
-    const { id } = request.params;
+    const { isCompleted } = request.body
+    const { id } = request.params
+
     const task = await Task.updateOne(
       {
-        id,
+        _id: id,
       },
       {
-        $set: { isCompleted },
+        isCompleted,
       }
-    );
-    return response.send({ message: "Task updated successfully" });
+    )
+    response.send({ message: "Task status updated" })
   } catch (error) {
-    console.log("error in updateTask", error);
-    response.send({ error: "Error in updating the Task" });
-    throw error;
+    console.log("error in toggleTaskStatus", error)
+    response.send({ error: "Error while toggling status task" })
+    throw error
   }
-};
+}
 
 export const deleteTask = async (request: AuthRequest, response: Response) => {
   try {
-    const { id } = request.params;
-    Task.deleteMany({ _id: id });
-    return response.send({ message: "Task deleted!" });
+    const { id } = request.params
+    await Task.deleteOne({
+      _id: id,
+    })
+    response.send({ message: "Task deleted" })
   } catch (error) {
-    console.log("error in deleteTask", error);
-    response.send({ error: "Something went wrong" });
-    throw error;
+    console.log("error in deleteTask", error)
+    response.send({ error: "Error while deleting task" })
+    throw error
   }
-};
+}
 
-export const updateTask = async (request: AuthRequest, response: Response) => {
+export const editTask = async (request: AuthRequest, response: Response) => {
   try {
-    const { _id, name, isCompleted, categoryId, date, isEditable }: ITask =
-      request.body;
-    const task = await Task.updateOne(
+    const { _id, categoryId, date, name }: ITask = request.body
+    await Task.updateOne(
       {
         _id,
       },
       {
-        $set: { name, isCompleted, categoryId, date, isEditable },
+        $set: {
+          name,
+          categoryId,
+          date,
+        },
       }
-    );
-    return response.send({ message: "Task updated successfully" });
+    )
+    response.send({ message: "Task updated successfully" })
   } catch (error) {
-    console.log("error in updateTask", error);
-    response.send({ error: "Error in updating the Task" });
-    throw error;
+    console.log("error in editTask", error)
+    response.send({ error: " Error while updating the task" })
+    throw error
   }
-};
+}

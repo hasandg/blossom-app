@@ -1,17 +1,27 @@
-import express from 'express'
-import { createTask, getAllCompletedTasks, getAllTasks, getAllTasksByCategoryId, getTasksForToday, toogleTaskStatus } from '../controllers/task.controller'
-import { authenticationMiddleware } from '../middleware'
-
+import express from "express"
+import {
+  createTask,
+  deleteTask,
+  editTask,
+  getAllCompletedTasks,
+  getAllTasks,
+  getAllTasksByCategory,
+  getTasksForToday,
+  toggleTaskStatus,
+} from "../controllers/task.controller"
+import { authenticationMiddleware } from "../middleware"
 
 const taskRoutes = express.Router()
 
 taskRoutes.use(authenticationMiddleware)
 
-
 taskRoutes.route("/").get(getAllTasks)
-taskRoutes.route("/compeleted").get(getAllCompletedTasks)
+taskRoutes.route("/tasks-by-categories/:id").get(getAllTasksByCategory)
+taskRoutes.route("/completed").get(getAllCompletedTasks)
 taskRoutes.route("/today").get(getTasksForToday)
-taskRoutes.route("/tasks-by-category/:id").get(getAllTasksByCategoryId)
-taskRoutes.route("/").post(createTask)
-taskRoutes.route("/:id").put(toogleTaskStatus)
+taskRoutes.route("/create").post(createTask)
+taskRoutes.route("/:id").put(toggleTaskStatus)
+taskRoutes.route("/:id").delete(deleteTask)
+taskRoutes.route("/edit/:id").put(editTask)
+
 export default taskRoutes

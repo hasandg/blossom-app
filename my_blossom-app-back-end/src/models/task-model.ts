@@ -1,5 +1,4 @@
-import mongoose, { Schema } from "mongoose";
-import { type } from "os";
+import mongoose, { Schema } from "mongoose"
 
 const taskSchema = new mongoose.Schema(
   {
@@ -8,7 +7,7 @@ const taskSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    category: {
+    categoryId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "Category",
@@ -19,12 +18,8 @@ const taskSchema = new mongoose.Schema(
     },
     isCompleted: {
       type: Boolean,
-      required: true
+      default: false,
     },
-    isEditable: {
-        type: Boolean,
-        default: false
-      },
     date: {
       type: String,
       required: true,
@@ -33,8 +28,8 @@ const taskSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-);
+)
 
-const Task=mongoose.model("Task" , taskSchema)
+const Task = mongoose.model("Task", taskSchema)
 
 export default Task
