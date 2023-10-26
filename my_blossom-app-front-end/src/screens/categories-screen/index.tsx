@@ -10,12 +10,13 @@ import { FlatList } from "react-native"
 import useSWR from "swr"
 
 const CategoriesScreen = () => {
-  const { data, isLoading, error } = useSWR<ICategory[]>(
+  const { data, isLoading } = useSWR<ICategory[]>(
     "categories/",
-    fetcher,
-    {
-      refreshInterval: 1000,
-    }
+    fetcher
+    // ,
+    // {
+    //   refreshInterval: 1000,
+    // }
   )
 
   if (isLoading) {

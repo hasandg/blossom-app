@@ -31,7 +31,9 @@ axiosInstance.interceptors.request.use(async (req) => {
   }
 })
 
-export const fetcher = (url: string) =>
-  axiosInstance.get(url).then((res) => res.data)
+export const fetcher = (url: string) => {
+  console.log(`fetcher called with url ${url}`);
+  return axiosInstance.get(url).then((res) => res.data)
+}
 
 export default axiosInstance

@@ -20,7 +20,7 @@ export default function App() {
               let appState = AppState.currentState;
 
               const onAppStateChange = (nextAppState: any) => {
-                // If it's resuming from background or inactive mode to active one 
+                // If it's resuming from background or inactive mode to active one
                 if (
                   appState.match(/inactive|background/) &&
                   nextAppState === "active"

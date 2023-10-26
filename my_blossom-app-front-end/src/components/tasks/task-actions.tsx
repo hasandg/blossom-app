@@ -5,7 +5,7 @@ import { format, isToday } from "date-fns";
 import { useState } from "react";
 import { FlatList, Pressable, TextInput } from "react-native";
 import { Calendar } from "react-native-calendars";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import useSWRMutation from "swr/mutation";
 import Loader from "../shared/loader";
 
@@ -15,7 +15,8 @@ type TaskActionsProps = {
 
 export const today = new Date();
 
-const todaysISODate = new Date().toISOString();
+const todaysISODate = new Date();
+todaysISODate.setHours(0, 0, 0, 0);
 
 const createTaskRequest = async (
   url: string,
@@ -32,12 +33,13 @@ const createTaskRequest = async (
 const TaskActions = ({ categoryId }: TaskActionsProps) => {
   const [newTask, setNewTask] = useState<ITaskRequest>({
     categoryId: categoryId,
-    date: todaysISODate,
+    date: todaysISODate.toISOString(),
     isCompleted: false,
     name: "",
   });
 
   const { data, trigger } = useSWRMutation("tasks/create", createTaskRequest);
+
   const [isSelectingCategory, setIsSelectingCategory] =
     useState<boolean>(false);
   const [isSelectingDate, setIsSelectingDate] = useState<boolean>(false);
@@ -46,6 +48,8 @@ const TaskActions = ({ categoryId }: TaskActionsProps) => {
     "categories",
     fetcher
   );
+
+  const { mutate } = useSWRConfig();
 
   if (isLoading || !categories) {
     return <Loader />;
@@ -58,23 +62,29 @@ const TaskActions = ({ categoryId }: TaskActionsProps) => {
   const onCreateTask = async () => {
     try {
       if (newTask.name.length.toString().trim().length > 0) {
-        trigger({
+        await trigger({
           ...newTask,
         });
         setNewTask({
           categoryId: newTask.categoryId,
           isCompleted: false,
-          date: todaysISODate,
+          date: todaysISODate.toISOString(),
           name: "",
         });
+        await mutate("tasks/");
+        await mutate("tasks/today");
+        await mutate("tasks/completed");
+        console.log(`create task with mutate tasks/tasks-by-categories/${newTask.categoryId}`);
+        await mutate("tasks/tasks-by-categories/${newTask.categoryId}");
       }
     } catch (error) {
       console.log("error in onCreateTask", error);
+      throw error;
     }
   };
 
   return (
-    <>
+    <Box>
       <Box
         bg="lightGray"
         px="4"
@@ -102,9 +112,7 @@ const TaskActions = ({ categoryId }: TaskActionsProps) => {
               };
             });
           }}
-          onSubmitEditing={() => {
-            onCreateTask();
-          }}
+          onSubmitEditing={onCreateTask}
         />
         <Box flexDirection="row" alignItems="center">
           <Pressable
@@ -132,7 +140,6 @@ const TaskActions = ({ categoryId }: TaskActionsProps) => {
               alignItems="center"
               p="2"
               borderRadius="rounded-xl"
-              borderWidth={2}
             >
               <Box
                 width={12}
@@ -154,54 +161,54 @@ const TaskActions = ({ categoryId }: TaskActionsProps) => {
             </Box>
           </Pressable>
         </Box>
-        {isSelectingCategory && (
-          <Box position="absolute" right={40} bottom={-120}>
-            <FlatList
-              data={categories}
-              renderItem={({ item, index }) => {
-                return (
-                  <Pressable
-                    onPress={() => {
-                      setNewTask((prev) => {
-                        return { ...prev, categoryId: item._id };
-                      });
-                      setIsSelectingCategory(false);
-                    }}
-                  >
-                    <Box
-                      bg="gray250"
-                      p="2"
-                      borderTopStartRadius={
-                        index === 0 ? "rounded-3xl" : "none"
-                      }
-                      borderTopEndRadius={index === 0 ? "rounded-3xl" : "none"}
-                      borderBottomStartRadius={
-                        categories.length - 1 === index ? "rounded-3xl" : "none"
-                      }
-                      borderBottomEndRadius={
-                        categories.length - 1 === index ? "rounded-3xl" : "none"
-                      }
-                    >
-                      <Box flexDirection="row">
-                        <Text>{item.icon.symbol}</Text>
-                        <Text
-                          ml="2"
-                          fontWeight={
-                            newTask.categoryId === item._id ? "700" : "400"
-                          }
-                        >
-                          {item.name}
-                        </Text>
-                      </Box>
-                    </Box>
-                  </Pressable>
-                );
-              }}
-            />
-          </Box>
-        )}
       </Box>
-      <Box>
+      {isSelectingCategory && (
+        <Box alignItems="flex-end" my="4" justifyContent="flex-end">
+          <FlatList
+            data={categories}
+            renderItem={({ item, index }) => {
+              return (
+                <Pressable
+                  onPress={() => {
+                    setNewTask((prev) => {
+                      return {
+                        ...prev,
+                        categoryId: item._id,
+                      };
+                    });
+                    setIsSelectingCategory(false);
+                  }}
+                >
+                  <Box
+                    bg="gray250"
+                    p="2"
+                    borderTopStartRadius={index === 0 ? "rounded-3xl" : "none"}
+                    borderTopEndRadius={index === 0 ? "rounded-3xl" : "none"}
+                    borderBottomStartRadius={
+                      categories?.length - 1 === index ? "rounded-2xl" : "none"
+                    }
+                    borderBottomEndRadius={
+                      categories?.length - 1 === index ? "rounded-2xl" : "none"
+                    }
+                  >
+                    <Box flexDirection="row">
+                      <Text>{item.icon.symbol}</Text>
+                      <Text
+                        ml="2"
+                        fontWeight={
+                          newTask.categoryId === item._id ? "700" : "400"
+                        }
+                      >
+                        {item.name}
+                      </Text>
+                    </Box>
+                  </Box>
+                </Pressable>
+              );
+            }}
+          />
+        </Box>
+      )}
         {isSelectingDate && (
           <Box>
             <Calendar
@@ -210,14 +217,16 @@ const TaskActions = ({ categoryId }: TaskActionsProps) => {
                 setIsSelectingDate(false);
                 const selectedDate = new Date(day.dateString).toISOString();
                 setNewTask((prev) => {
-                  return { ...prev, date: selectedDate };
+                  return { 
+                    ...prev, 
+                    date: selectedDate, 
+                  };
                 });
               }}
             />
           </Box>
         )}
       </Box>
-    </>
   );
 };
 

@@ -20,7 +20,7 @@ taskRoutes.route("/tasks-by-categories/:id").get(getAllTasksByCategory)
 taskRoutes.route("/completed").get(getAllCompletedTasks)
 taskRoutes.route("/today").get(getTasksForToday)
 taskRoutes.route("/create").post(createTask)
-taskRoutes.route("/:id").put(toggleTaskStatus)
+taskRoutes.route("/update/:id").put(toggleTaskStatus)
 taskRoutes.route("/:id").delete(deleteTask)
 taskRoutes.route("/edit/:id").put(editTask)
 

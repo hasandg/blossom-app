@@ -25,19 +25,23 @@ const CategoryScreen = () => {
     fetcher
   );
 
-  console.log("category", JSON.stringify(category, null, 2));
+  // console.log("category", JSON.stringify(category, null, 2));
 
-  const { data: tasks, isLoading: isLoadingTasks } = useSWR<ITask[]>(
-    `tasks/tasks-by-categories/${id}`,
-    fetcher,
-    {
-      refreshInterval: 1000,
-    }
+  const {
+    data: tasks,
+    isLoading: isLoadingTasks,
+    mutate: mutateTasks,
+  } = useSWR<ITask[]>(`tasks/tasks-by-categories/${id}`, fetcher
+  // , {
+  //   refreshInterval: 1000,
+  // }
   );
 
   console.log(
     `isLoadingTasks: ${isLoadingTasks} isLoadingCategory: ${isLoadingCategory} category: ${category} `
   );
+
+  console.log(`task count`, tasks?.length);
 
   if (isLoadingTasks || isLoadingCategory || !category || !tasks) {
     return <Loader />;
@@ -69,7 +73,7 @@ const CategoryScreen = () => {
         <FlatList
           data={tasks}
           renderItem={({ item, index }) => {
-            return <Task task={item} />;
+            return <Task task={item} mutateTasks={mutateTasks} />;
           }}
           ItemSeparatorComponent={() => <Box height={14} />}
         />

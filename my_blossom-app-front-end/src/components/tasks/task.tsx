@@ -1,21 +1,30 @@
 import { HomeScreenNavigationType } from "@/navigation/types";
 import axiosInstance from "@/services/config";
 import { ITask } from "@/types";
-import { Box, Text } from "@/utils/theme";
+import { AnimatedBox, Box, Text } from "@/utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Pressable } from "react-native";
+import {
+  FadeInLeft,
+  FadeInRight,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { useSWRConfig } from "swr";
 import useSWRMutation from "swr/mutation";
 
 type TaskProps = {
   task: ITask;
+  mutateTasks: () => Promise<ITask[] | undefined>;
 };
 
-type ITaskStatusRequest = {
+interface ITaskStatusRequest {
   id: string;
   isCompleted: boolean;
-};
+}
 
 const toggleTaskStatusRequest = async (
   url: string,
@@ -29,51 +38,100 @@ const toggleTaskStatusRequest = async (
   }
 };
 
-const Task = ({ task }: TaskProps) => {
-  const { trigger } = useSWRMutation("tasks", toggleTaskStatusRequest);
+const Task = ({ task, mutateTasks }: TaskProps) => {
+  const { trigger } = useSWRMutation("tasks/update", toggleTaskStatusRequest);
+  const { mutate } = useSWRConfig();
 
-  const navigation = useNavigation<HomeScreenNavigationType>()
+  const offset = useSharedValue(1);
+  const checkmarkIconSize = useSharedValue(0.8);
+
+  const navigation = useNavigation<HomeScreenNavigationType>();
 
   const toggleTaskStatus = async () => {
     try {
-      const _updateTask = {
+      const _updatedTask = {
         id: task._id,
         isCompleted: !task.isCompleted,
       };
-      await trigger(_updateTask);
+      await trigger(_updatedTask);
+      await mutateTasks();
+      console.log("task mutation complete in Task", "task.name:", task.name , "!task.isCompleted: ", !task.isCompleted);
+
+      await mutate("tasks/");
+      await mutate("tasks/today");
+      await mutate("tasks/completed");
+      console.log(`toggleTaskStatus in task.tsx ${task._id} with mutate tasks/tasks-by-categories/${task.categoryId}`);      
+      await mutate(`tasks/tasks-by-categories/${task.categoryId}`);
+      
+      if (!_updatedTask.isCompleted) {
+        offset.value = 1;
+        checkmarkIconSize.value = 0;
+      } else {
+        offset.value = 1.1;
+        checkmarkIconSize.value = 1;
+      }
     } catch (error) {
       console.log("error in toggleTaskStatus", error);
       throw error;
     }
   };
 
-  const navigateToEditTask =() =>{
-    navigation.navigate('EditTask', {task})
-  }
+  const navigateToEditTask = () => {
+    navigation.navigate("EditTask", {
+      task,
+    });
+  };
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withSpring(offset.value) }],
+    };
+  });
+
+  const checkMarkIconStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withSpring(checkmarkIconSize.value) }],
+      opacity: task.isCompleted ? offset.value : 0,
+    };
+  });
 
   return (
-    <Pressable onPress={toggleTaskStatus} onLongPress={navigateToEditTask}>
-      <Box p="4" bg="lightGray" borderRadius="rounded-5xl" flexDirection="row">
-        <Box flexDirection="row" alignItems="center">
-          <Box
-            height={26}
-            mr="4"
-            width={26}
-            bg={task.isCompleted ? "gray9" : "gray300"}
-            alignItems="center"
-            borderRadius="rounded-4xl"
-            justifyContent="center"
-          >
-            <Ionicons name="ios-checkmark" size={20} color="white" />
+    <AnimatedBox entering={FadeInRight} exiting={FadeInLeft}>
+      <Pressable onPress={toggleTaskStatus} onLongPress={navigateToEditTask}>
+        <Box
+          p="4"
+          bg="lightGray"
+          borderRadius="rounded-5xl"
+          flexDirection="row"
+        >
+          <Box flexDirection="row" alignItems="center">
+            <AnimatedBox
+              style={[animatedStyles]}
+              flexDirection="row"
+              alignItems="center"
+            >
+              <Box
+                height={26}
+                width={26}
+                bg={task.isCompleted ? "gray9" : "gray300"}
+                borderRadius="rounded-xl"
+                alignItems="center"
+                justifyContent="center"
+              >
+                {task.isCompleted && (
+                  <AnimatedBox style={[checkMarkIconStyles]}>
+                    <Ionicons name="ios-checkmark" size={20} color="white" />
+                  </AnimatedBox>
+                )}
+              </Box>
+            </AnimatedBox>
+            <Text ml="3" variant="textXl">
+              {task.name}
+            </Text>
           </Box>
-
-          <Text ml="3" variant="textXl">
-            {task.name}{" "}
-          </Text>
+          <Box></Box>
         </Box>
-        <Box></Box>
-      </Box>
-    </Pressable>
+      </Pressable>
+    </AnimatedBox>
   );
 };
 

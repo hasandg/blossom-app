@@ -3,6 +3,7 @@ import Input from "@/components/shared/input"
 import SafeAreaWrapper from "@/components/shared/safe-area-wrapper"
 import { AuthScreenNavigationType } from "@/navigation/types"
 import { registerUser } from "@/services/api"
+import { IUser } from "@/types"
 import { Box, Text } from "@/utils/theme"
 import { useNavigation } from "@react-navigation/native"
 import React from "react"
@@ -22,7 +23,7 @@ const SignUpScreen = () => {
   } = useForm<IUser>({
     defaultValues: {
       email: "",
-      password: "",
+      password: "", 
     },
   })
 

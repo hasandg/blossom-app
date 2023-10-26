@@ -1,9 +1,11 @@
-import { ITask } from "@/types";
+import { ICategory, ITask } from "@/types";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import {
   CompositeNavigationProp,
+  CompositeScreenProps,
   NavigatorScreenParams,
 } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type AuthStackParamList = {
   Welcome: undefined;
@@ -31,7 +33,7 @@ export type CategoriesStackParamList = {
     id: string;
   };
   CreateCategory: {
-    id?: string;
+    category?: ICategory
   };
 };
 
@@ -57,6 +59,12 @@ export type AuthScreenNavigationType<
   NativeStackNavigationProp<AuthStackParamList, RouteName>,
   NativeStackNavigationProp<AppStackParamList, "Root">
 >;
+
+export type RootTabScreenProps<Screen extends keyof RootBottomTabParamList> =
+  CompositeScreenProps<
+    BottomTabScreenProps<RootBottomTabParamList, Screen>,
+    NativeStackScreenProps<RootBottomTabParamList>
+  >
 export type CategoriesNavigationType =
   NativeStackNavigationProp<CategoriesStackParamList>;
 
