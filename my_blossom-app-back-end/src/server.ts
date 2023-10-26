@@ -14,7 +14,7 @@ application.use(express.json())
 
 
 
-const PORT=1337
+const PORT=process.env.PORT || 3000
 
 connectToDatabase()
 
