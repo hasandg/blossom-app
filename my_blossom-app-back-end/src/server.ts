@@ -3,7 +3,7 @@ import connectToDatabase from "./db"
 import userRoutes from "./routes/user.routes"
 import categoryRoutes from "./routes/category.routes"
 import taskRoutes from "./routes/task.routes"
-import { cors } from "cors";
+import cors  from "cors";
 
 const application = express()
 
