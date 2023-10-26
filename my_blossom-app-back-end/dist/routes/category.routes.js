@@ -9,6 +9,7 @@ var middleware_1 = require("../middleware");
 var categoryRoutes = express_1.default.Router();
 categoryRoutes.use(middleware_1.authenticationMiddleware);
 categoryRoutes.route("/").get(category_controller_1.getAllCategories);
+categoryRoutes.route("/:id").get(category_controller_1.getCategoryById);
 categoryRoutes.route("/create").post(category_controller_1.createCategory);
 categoryRoutes.route("/:id").delete(category_controller_1.deleteCategory);
 categoryRoutes.route("/").put(category_controller_1.updateCategory);

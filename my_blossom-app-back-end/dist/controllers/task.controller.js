@@ -39,56 +39,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTask = exports.deleteTask = exports.toogleTaskStatus = exports.createTask = exports.getTasksForToday = exports.getAllCompletedTasks = exports.getAllTasksByCategoryId = exports.getAllTasks = void 0;
-var task_modal_1 = __importDefault(require("../models/task-modal"));
+exports.editTask = exports.deleteTask = exports.toggleTaskStatus = exports.createTask = exports.getTasksForToday = exports.getAllCompletedTasks = exports.getAllTasksByCategory = exports.getAllTasks = void 0;
+var task_model_1 = __importDefault(require("../models/task-model"));
 var getAllTasks = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
     var userId, tasks, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                userId = request.body.userId;
-                return [4 /*yield*/, task_modal_1.default.find({
+                userId = request.user;
+                return [4 /*yield*/, task_model_1.default.find({
                         user: userId,
                     })];
             case 1:
                 tasks = _a.sent();
-                return [2 /*return*/, response.send(tasks)];
+                response.send(tasks);
+                return [3 /*break*/, 3];
             case 2:
                 error_1 = _a.sent();
                 console.log("error in getAllTasks", error_1);
-                response.send({ error: "Something went wrong" });
+                response.send({ error: "Error while fetching tasks" });
                 throw error_1;
             case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.getAllTasks = getAllTasks;
-var getAllTasksByCategoryId = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var userId, categoryId, tasks, error_2;
+var getAllTasksByCategory = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
+    var userId, id, tasks, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 userId = request.user;
-                categoryId = request.body.categoryId;
-                return [4 /*yield*/, task_modal_1.default.find({
+                id = request.params.id;
+                return [4 /*yield*/, task_model_1.default.find({
                         user: userId,
-                        category: categoryId,
+                        categoryId: id,
                     })];
             case 1:
                 tasks = _a.sent();
-                return [2 /*return*/, response.send(tasks)];
+                response.send(tasks);
+                return [3 /*break*/, 3];
             case 2:
                 error_2 = _a.sent();
-                console.log("error in getAllTasksByCategoryId", error_2);
-                response.send({ error: "Something went wrong" });
+                console.log("error in getAllTasksByCategory", error_2);
+                response.send({ error: "Error while fetching tasks" });
                 throw error_2;
             case 3: return [2 /*return*/];
         }
     });
 }); };
-exports.getAllTasksByCategoryId = getAllTasksByCategoryId;
+exports.getAllTasksByCategory = getAllTasksByCategory;
 var getAllCompletedTasks = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
     var userId, tasks, error_3;
     return __generator(this, function (_a) {
@@ -96,17 +98,18 @@ var getAllCompletedTasks = function (request, response) { return __awaiter(void 
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 userId = request.user;
-                return [4 /*yield*/, task_modal_1.default.find({
+                return [4 /*yield*/, task_model_1.default.find({
                         user: userId,
                         isCompleted: true,
                     })];
             case 1:
                 tasks = _a.sent();
-                return [2 /*return*/, response.send(tasks)];
+                response.send(tasks);
+                return [3 /*break*/, 3];
             case 2:
                 error_3 = _a.sent();
                 console.log("error in getAllCompletedTasks", error_3);
-                response.send({ error: "Something went wrong" });
+                response.send({ error: "Error while fetching tasks" });
                 throw error_3;
             case 3: return [2 /*return*/];
         }
@@ -114,25 +117,26 @@ var getAllCompletedTasks = function (request, response) { return __awaiter(void 
 }); };
 exports.getAllCompletedTasks = getAllCompletedTasks;
 var getTasksForToday = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var userId, todayISODate, tasks, error_4;
+    var userId, todaysISODate, tasks, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 userId = request.user;
-                todayISODate = new Date();
-                todayISODate.setHours(0, 0, 0, 0);
-                return [4 /*yield*/, task_modal_1.default.find({
+                todaysISODate = new Date();
+                todaysISODate.setHours(0, 0, 0, 0);
+                return [4 /*yield*/, task_model_1.default.find({
                         user: userId,
-                        date: todayISODate.toISOString(),
+                        date: todaysISODate.toISOString(),
                     })];
             case 1:
                 tasks = _a.sent();
-                return [2 /*return*/, response.send(tasks)];
+                response.send(tasks);
+                return [3 /*break*/, 3];
             case 2:
                 error_4 = _a.sent();
                 console.log("error in getTasksForToday", error_4);
-                response.send({ error: "Something went wrong" });
+                response.send({ error: "Error while fetching tasks" });
                 throw error_4;
             case 3: return [2 /*return*/];
         }
@@ -140,33 +144,34 @@ var getTasksForToday = function (request, response) { return __awaiter(void 0, v
 }); };
 exports.getTasksForToday = getTasksForToday;
 var createTask = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name_1, isCompleted, categoryId, date, isEditable, task, error_5;
+    var userId, _a, name_1, date, categoryId, task, error_5;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 2, , 3]);
-                _a = request.body, name_1 = _a.name, isCompleted = _a.isCompleted, categoryId = _a.categoryId, date = _a.date, isEditable = _a.isEditable;
-                return [4 /*yield*/, task_modal_1.default.create({
+                userId = request.user;
+                _a = request.body, name_1 = _a.name, date = _a.date, categoryId = _a.categoryId;
+                return [4 /*yield*/, task_model_1.default.create({
                         name: name_1,
-                        isCompleted: isCompleted,
-                        categoryId: categoryId,
                         date: date,
-                        isEditable: isEditable,
+                        categoryId: categoryId,
+                        user: userId,
                     })];
             case 1:
                 task = _b.sent();
-                return [2 /*return*/, response.send(task)];
+                response.send(task);
+                return [3 /*break*/, 3];
             case 2:
                 error_5 = _b.sent();
                 console.log("error in createTask", error_5);
-                response.send({ error: "Something went wrong" });
+                response.send({ error: "Error while creating task" });
                 throw error_5;
             case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.createTask = createTask;
-var toogleTaskStatus = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
+var toggleTaskStatus = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
     var isCompleted, id, task, error_6;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -174,63 +179,76 @@ var toogleTaskStatus = function (request, response) { return __awaiter(void 0, v
                 _a.trys.push([0, 2, , 3]);
                 isCompleted = request.body.isCompleted;
                 id = request.params.id;
-                return [4 /*yield*/, task_modal_1.default.updateOne({
-                        id: id,
+                return [4 /*yield*/, task_model_1.default.updateOne({
+                        _id: id,
                     }, {
-                        $set: { isCompleted: isCompleted },
+                        isCompleted: isCompleted,
                     })];
             case 1:
                 task = _a.sent();
-                return [2 /*return*/, response.send({ message: "Task updated successfully" })];
+                response.send({ message: "Task status updated" });
+                return [3 /*break*/, 3];
             case 2:
                 error_6 = _a.sent();
-                console.log("error in updateTask", error_6);
-                response.send({ error: "Error in updating the Task" });
+                console.log("error in toggleTaskStatus", error_6);
+                response.send({ error: "Error while toggling status task" });
                 throw error_6;
             case 3: return [2 /*return*/];
         }
     });
 }); };
-exports.toogleTaskStatus = toogleTaskStatus;
+exports.toggleTaskStatus = toggleTaskStatus;
 var deleteTask = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var id;
+    var id, error_7;
     return __generator(this, function (_a) {
-        try {
-            id = request.params.id;
-            task_modal_1.default.deleteMany({ _id: id });
-            return [2 /*return*/, response.send({ message: "Task deleted!" })];
-        }
-        catch (error) {
-            console.log("error in deleteTask", error);
-            response.send({ error: "Something went wrong" });
-            throw error;
-        }
-        return [2 /*return*/];
-    });
-}); };
-exports.deleteTask = deleteTask;
-var updateTask = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, _id, name_2, isCompleted, categoryId, date, isEditable, task, error_7;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+        switch (_a.label) {
             case 0:
-                _b.trys.push([0, 2, , 3]);
-                _a = request.body, _id = _a._id, name_2 = _a.name, isCompleted = _a.isCompleted, categoryId = _a.categoryId, date = _a.date, isEditable = _a.isEditable;
-                return [4 /*yield*/, task_modal_1.default.updateOne({
-                        _id: _id,
-                    }, {
-                        $set: { name: name_2, isCompleted: isCompleted, categoryId: categoryId, date: date, isEditable: isEditable },
+                _a.trys.push([0, 2, , 3]);
+                id = request.params.id;
+                return [4 /*yield*/, task_model_1.default.deleteOne({
+                        _id: id,
                     })];
             case 1:
-                task = _b.sent();
-                return [2 /*return*/, response.send({ message: "Task updated successfully" })];
+                _a.sent();
+                response.send({ message: "Task deleted" });
+                return [3 /*break*/, 3];
             case 2:
-                error_7 = _b.sent();
-                console.log("error in updateTask", error_7);
-                response.send({ error: "Error in updating the Task" });
+                error_7 = _a.sent();
+                console.log("error in deleteTask", error_7);
+                response.send({ error: "Error while deleting task" });
                 throw error_7;
             case 3: return [2 /*return*/];
         }
     });
 }); };
-exports.updateTask = updateTask;
+exports.deleteTask = deleteTask;
+var editTask = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _id, categoryId, date, name_2, error_8;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 2, , 3]);
+                _a = request.body, _id = _a._id, categoryId = _a.categoryId, date = _a.date, name_2 = _a.name;
+                return [4 /*yield*/, task_model_1.default.updateOne({
+                        _id: _id,
+                    }, {
+                        $set: {
+                            name: name_2,
+                            categoryId: categoryId,
+                            date: date,
+                        },
+                    })];
+            case 1:
+                _b.sent();
+                response.send({ message: "Task updated successfully" });
+                return [3 /*break*/, 3];
+            case 2:
+                error_8 = _b.sent();
+                console.log("error in editTask", error_8);
+                response.send({ error: " Error while updating the task" });
+                throw error_8;
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.editTask = editTask;

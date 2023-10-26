@@ -40,11 +40,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.createUser = void 0;
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var bcrypt_1 = __importDefault(require("bcrypt"));
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var user_model_1 = __importDefault(require("../models/user-model"));
 var getUserToken = function (_id) {
-    var authenticatedUserToken = jsonwebtoken_1.default.sign({ _id: _id }, "express", { expiresIn: "7d", });
+    var authenticatedUserToken = jsonwebtoken_1.default.sign({ _id: _id }, "express", {
+        expiresIn: "7d",
+    });
     return authenticatedUserToken;
 };
 var createUser = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
@@ -54,19 +56,15 @@ var createUser = function (request, response) { return __awaiter(void 0, void 0,
             case 0:
                 _b.trys.push([0, 4, , 5]);
                 _a = request.body, name_1 = _a.name, email = _a.email, password = _a.password;
-                return [4 /*yield*/, user_model_1.default.findOne({ email: email })
-                    //console.dir(existingUser)
-                ];
+                return [4 /*yield*/, user_model_1.default.findOne({ email: email })];
             case 1:
                 existingUser = _b.sent();
-                //console.dir(existingUser)
                 if (existingUser) {
                     return [2 /*return*/, response.status(409).send("user already exist")];
                 }
                 return [4 /*yield*/, bcrypt_1.default.hash(password, 12)];
             case 2:
                 hashedPassword = _b.sent();
-                console.log("created hash: ", hashedPassword);
                 return [4 /*yield*/, user_model_1.default.create({
                         name: name_1,
                         email: email,
@@ -77,57 +75,48 @@ var createUser = function (request, response) { return __awaiter(void 0, void 0,
                 return [2 /*return*/, response.status(201).send({ message: "User created successfully" })];
             case 4:
                 error_1 = _b.sent();
-                console.log('error in createUser', error_1);
-                throw (error_1);
+                console.log("error in createUser", error_1);
+                throw error_1;
             case 5: return [2 /*return*/];
         }
     });
 }); };
 exports.createUser = createUser;
 var loginUser = function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, existingUser, isPasswordIdentical, _b, _c, _d, token, _e, _f, _g, error_2;
-    var _h, _j;
-    return __generator(this, function (_k) {
-        switch (_k.label) {
+    var _a, email, password, existingUser, isPasswordIdentical, token, error_2;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _k.trys.push([0, 9, , 10]);
+                _b.trys.push([0, 3, , 4]);
                 _a = request.body, email = _a.email, password = _a.password;
                 return [4 /*yield*/, user_model_1.default.findOne({ email: email })];
             case 1:
-                existingUser = (_k.sent()).$clone();
+                existingUser = _b.sent();
                 if (!existingUser) {
-                    return [2 /*return*/, response.status(409).send({ message: "User doesn't exist!" })];
+                    return [2 /*return*/, response.status(409).send({ message: "User doesn't exist" })];
                 }
-                _c = (_b = bcrypt_1.default).compare;
-                _d = [password];
-                return [4 /*yield*/, existingUser];
-            case 2: return [4 /*yield*/, _c.apply(_b, _d.concat([(_k.sent()).password]))];
+                return [4 /*yield*/, bcrypt_1.default.compare(password, existingUser.password)];
+            case 2:
+                isPasswordIdentical = _b.sent();
+                if (isPasswordIdentical) {
+                    token = getUserToken(existingUser._id);
+                    return [2 /*return*/, response.send({
+                            token: token,
+                            user: {
+                                email: existingUser.email,
+                                name: existingUser.name,
+                            },
+                        })];
+                }
+                else {
+                    return [2 /*return*/, response.status(400).send({ message: "Wrong credentials" })];
+                }
+                return [3 /*break*/, 4];
             case 3:
-                isPasswordIdentical = _k.sent();
-                if (!isPasswordIdentical) return [3 /*break*/, 7];
-                _e = getUserToken;
-                return [4 /*yield*/, existingUser];
-            case 4:
-                token = _e.apply(void 0, [(_k.sent())._id]);
-                _g = (_f = response).send;
-                _h = {
-                    token: token
-                };
-                _j = {};
-                return [4 /*yield*/, existingUser];
-            case 5:
-                _j.email = (_k.sent()).email;
-                return [4 /*yield*/, existingUser];
-            case 6: return [2 /*return*/, _g.apply(_f, [(_h.user = (_j.name = (_k.sent()).name,
-                        _j),
-                        _h)])];
-            case 7: return [2 /*return*/, response.status(400).send({ message: "Wrong credentials" })];
-            case 8: return [3 /*break*/, 10];
-            case 9:
-                error_2 = _k.sent();
-                console.log('error in loginUser', error_2);
-                throw (error_2);
-            case 10: return [2 /*return*/];
+                error_2 = _b.sent();
+                console.log("error in loginUser", error_2);
+                throw error_2;
+            case 4: return [2 /*return*/];
         }
     });
 }); };
