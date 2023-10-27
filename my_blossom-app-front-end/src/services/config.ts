@@ -2,8 +2,8 @@ import axios from "axios"
 import * as SecureStore from "expo-secure-store"
 //export const BASE_URL = "http://192.168.1.104:1337/"
 //export const BASE_URL = "http://localhost:1337/"
-//export const BASE_URL = "https://blossom-app-backend-ice6.onrender.com/"
-export const BASE_URL = "https://busy-erin-narwhal-yoke.cyclic.app"
+export const BASE_URL = "https://blossom-app-backend-ice6.onrender.com/"
+//export const BASE_URL = "https://busy-erin-narwhal-yoke.cyclic.app"
 
 const TIME_OUT = 30000
 export const BLOSSOM_TOKEN_NAME = "blossom_user_token"
