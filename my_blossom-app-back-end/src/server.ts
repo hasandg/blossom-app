@@ -11,8 +11,7 @@ application.use(cors());
 
 application.use(express.json());
 
-//const PORT=process.env.PORT || 1337
-const PORT = 1337;
+const PORT=process.env.PORT || 1337
 
 connectToDatabase();
 
