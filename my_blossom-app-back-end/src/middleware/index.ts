@@ -22,7 +22,11 @@ export const authenticationMiddleware = async (
         const { _id } = jwt.verify(token, "express")
         const existingUser = await User.findOne({ _id })
         if (existingUser) {
+            console.log("existingUser", existingUser);
+            
             request.user = existingUser.id
+        }else{
+            console.log("existingUser not found");            
         }
 
         next()

@@ -1,9 +1,8 @@
 import axios from "axios"
 import * as SecureStore from "expo-secure-store"
 //export const BASE_URL = "http://192.168.1.104:1337/"
-//export const BASE_URL = "http://localhost:1337/"
-// export const BASE_URL = "https://production-blossom-app.onrender.com/"
-export const BASE_URL = "https://blossom-app-backend-ice6.onrender.com/"
+export const BASE_URL = "http://localhost:1337/"
+//export const BASE_URL = "https://blossom-app-backend-ice6.onrender.com/"
 
 const TIME_OUT = 30000
 export const BLOSSOM_TOKEN_NAME = "blossom_user_token"
@@ -15,7 +14,7 @@ const axiosInstance = axios.create({
 
 export const saveToken = async (key: string, value: string) => {
   try {
-    await SecureStore.setItemAsync(key, value)
+    await SecureStore.setItemAsync(key, value)    
   } catch (error) {
     console.log("error in saveToken", error)
     throw error

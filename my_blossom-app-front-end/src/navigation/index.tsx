@@ -6,8 +6,9 @@ import AuthStackNavigator from "./auth-stack-navigator";
 
 const Navigation = () => {
   const { user } = useUserGlobalStore();
-   //const user= undefined
-  console.log("user:     ", JSON.stringify(user, null, 2));
+  //const user= undefined
+  console.dir("user with dir:     ", user)
+  console.log("user with json:     ", JSON.stringify(user, null, 2));
   return (
     <NavigationContainer>
       {user ? <AppStackNavigator /> : <AuthStackNavigator />}

@@ -53,6 +53,10 @@ export const createCategory = async (
   try {
     const { color, icon, name }: ICategory = request.body
     const { user } = request
+    
+    console.dir("user with dir:     ", user)
+
+    console.log("user with json:     ", JSON.stringify(user, null, 2));
 
     const category = await Category.create({
       color,
